@@ -1,8 +1,8 @@
 CXX = g++
 CXXFLAGS := -std=c++17 -Wall -Wextra -pedantic -O3 -DNDEBUG
 
-LFLAGS = -L../  -lckv
-IFLAGS = -I../
+LFLAGS = -L../src  -lckv
+IFLAGS = -I../src
 
 CXXFLAGS += $(IFLAGS)
 
