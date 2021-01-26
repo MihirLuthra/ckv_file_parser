@@ -35,30 +35,33 @@ install(
 install(
 	EXPORT ckv_file_parser_targets
 	FILE ckv_file_parser_targets.cmake
-	DESTINATION lib/cmake
+	DESTINATION cmake
 )
 
 include(CMakePackageConfigHelpers)
 
 configure_package_config_file(
 	"${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in"
-	"${CMAKE_CURRENT_BINARY_DIR}/ckv_file_parser_config.cmake"
+	"${CMAKE_CURRENT_BINARY_DIR}/ckv_file_parser-config.cmake"
 
-	INSTALL_DESTINATION lib/cmake
+	INSTALL_DESTINATION cmake
 
 	NO_SET_AND_CHECK_MACRO
 	NO_CHECK_REQUIRED_COMPONENTS_MACRO
 )
 
 write_basic_package_version_file(
-	"${CMAKE_CURRENT_BINARY_DIR}/ckv_file_parser_config_version.cmake"
+	"${CMAKE_CURRENT_BINARY_DIR}/ckv_file_parser-config-version.cmake"
 	VERSION "${ckv_file_parser_VERSION_MAJOR}.${ckv_file_parser_VERSION_MINOR}.${ckv_file_parser_VERSION_PATCH}"
 	COMPATIBILITY AnyNewerVersion
 )
 
 install(
-	FILES "${CMAKE_CURRENT_BINARY_DIR}/ckv_file_parser_config.cmake"
-	DESTINATION lib/cmake
+	FILES
+	"${CMAKE_CURRENT_BINARY_DIR}/ckv_file_parser-config.cmake"
+	"${CMAKE_CURRENT_BINARY_DIR}/ckv_file_parser-config-version.cmake"
+	
+	DESTINATION cmake
 )
 
 export(
