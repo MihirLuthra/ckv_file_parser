@@ -1,0 +1,8 @@
+#ifndef __CKV_FILE_PARSER_CONFIG_H__
+#define __CKV_FILE_PARSER_CONFIG_H__
+
+#define CKV_FILE_PARSER_VERSION_MAJOR @ckv_file_parser_VERSION_MAJOR@
+#define CKV_FILE_PARSER_VERSION_MINOR @ckv_file_parser_VERSION_MINOR@
+#define CKV_FILE_PARSER_VERSION_PATCH @ckv_file_parser_VERSION_PATCH@
+
+#endif /* __CKV_FILE_PARSER_CONFIG_H__ */

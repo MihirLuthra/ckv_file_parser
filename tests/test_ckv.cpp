@@ -1,6 +1,5 @@
 #include <cstdlib>
 #include <ctime>
-#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <map>
@@ -9,7 +8,6 @@
 #include <sstream>
 #include <unordered_map>
 
-namespace fs = std::filesystem;
 
 #define RESET       "\033[0m"
 #define BLUE        "\033[34m"

@@ -7,6 +7,7 @@
 #include <sstream>
 #include <string>
 #include <unordered_map>
+#include <ckv_config.hpp>
 
 namespace ckv {
 
