@@ -4,6 +4,7 @@
 *.out
 *.*.swp
 .cache
+compile_commands.json
 
 # for_testing_set_value_for_key.qtc would be changed every
 # time make test is run
