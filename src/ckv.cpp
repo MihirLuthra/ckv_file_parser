@@ -8,26 +8,43 @@ bool tab_or_space(char ch)
 	return (ch == '\t' || ch == ' ');
 }
 
-/*
+/**
  * Returns true if the character used in the key is
  * invalid.
+ *
+ * \param ch Character to check.
+ * \return true if character is valid and false if not.
  */
 bool is_char_invalid(char ch)
 {
 	return (!std::isalnum(ch) && ch != '_' && ch != '-');
 }
 
+
+/**
+ * Opens file file_path in file_reader.
+ */
 void ckv::ConfigFile::open_file()
 {
 	if (!file_reader.is_open()) {
-		file_reader.open(file_name);
+		file_reader.open(file_path);
 		if (!file_reader) {
 			err_line_no = 0;
-			throw ckv::FileOpenFailed(file_name);
+			throw ckv::FileOpenFailed(file_path);
 		}
 	}
 }
 
+/**
+ * Prints key value pair in a readable form.
+ *
+ * Basically it replaces all newlines in the value with a newline followed by a tab.
+ * This is because ckv files require a tab to indicate value.
+ *
+ * \param out The output stream where key & value should be written.
+ * \param key Key to output
+ * \param value Value corresponding to the key
+ */
 void ckv::ConfigFile::print_key_val(std::ostream &out, std::string key, std::string value)
 {
 	std::string value_to_print = std::regex_replace(value, std::regex("\n"), "\n\t");
@@ -36,28 +53,29 @@ void ckv::ConfigFile::print_key_val(std::ostream &out, std::string key, std::str
 	out << std::endl;
 }
 
-/*
+/**
+ * Parses untabbed lines.
+ *
  * This parses the untabbed values and returns the key name.
  * Further in_block_parse() should be called to go
  * through the value of key.
- *
  * This function checks the correctness of the file
- * until the point it parses and throws exceptions
- * accordingly.
+ * only until the point it parses and throws exceptions
+ * accordingly. For example, if the key it was looking for
+ * has been found, it won't read the file further and exit.
  *
- * possible exceptions:
- * 	EqualToWithoutAKey
- * 	InvalidCharacter
- * 	MissingEqualTo
- * 	NoValueFoundForKey
- * 	TrailingCharsAfterEqualTo
- * 	ValueWithoutAKey
+ * \throws EqualToWithoutAKey
+ * \throws InvalidCharacter
+ * \throws MissingEqualTo
+ * \throws NoValueFoundForKey
+ * \throws TrailingCharsAfterEqualTo
+ * \throws ValueWithoutAKey
  *
- * retval:
- *	It returns the next key found.
- *	If the key is empty, means there is
- *	no data further in file and in_block_parse()
- *	should NOT be called in such a case.
+ * \return
+ *  It returns the next key found.
+ *  If the key is empty, means there is
+ *  no data further in file and in_block_parse()
+ *  should NOT be called in such a case.
  */
 std::string ckv::ConfigFile::out_block_parse()
 {
@@ -117,14 +135,16 @@ std::string ckv::ConfigFile::out_block_parse()
 	return key;
 }
 
-/*
+/**
+ * Parses tabbed lines or lines followed by '+'.
+ *
  * This parses the tabbed values for a key.
  * Should strictly be called after out_block_parse() iff
  * key returned from it isn't empty.
  * It goes till EOF or the line not starting with tab or '+'.
  *
- * retval:
- *  returns the value
+ * \return
+ *  returns the value of key
  */
 std::string ckv::ConfigFile::in_block_parse()
 {
@@ -153,24 +173,21 @@ std::string ckv::ConfigFile::in_block_parse()
 	return "";
 }
 
-/*
- * It returns the value for the key param1.
- * It calls `in_block_parse()` to get key's
- * value. Read the desc of that func.
+/**
+ * It returns the value for the param key.
  *
- * possible exceptions:
- * 	EqualToWithoutAKey
- * 	FileOpenFailed
- * 	InvalidCharacter
- * 	MissingEqualTo
- * 	NoValueFoundForKey
- * 	TrailingCharsAfterEqualTo
- * 	ValueWithoutAKey
+ * \throws EqualToWithoutAKey
+ * \throws FileOpenFailed
+ * \throws InvalidCharacter
+ * \throws MissingEqualTo
+ * \throws NoValueFoundForKey
+ * \throws TrailingCharsAfterEqualTo
+ * \throws ValueWithoutAKey
  *
- * param1:
- * 	key whose value should be returned.
+ * \param key
+ *  Key whose value should be returned.
  *
- * retval:
+ * \return
  * 	value for key param1.
  */
 std::string ckv::ConfigFile::get_value_for_key(std::string key)
@@ -212,28 +229,27 @@ std::string ckv::ConfigFile::get_value_for_key(std::string key)
 	throw ckv::KeyNotFound(key);
 }
 
-/*
- * It sets the value for the key param1 to value param2.
- * It outputs the resulting file ouput to param3.
+/**
+ * It sets the value for the param key to param value.
+ * It outputs the resulting file ouput to param out.
  *
- * param1:
- * 	key whose value needs to be changes
+ * \param key
+ *  Key whose value needs to be changes
  *
- * param2:
+ * \param new_value
  * 	new value for param1
  *
- * param3:
+ * \param out
  * 	ostream to output the updated contents
  *
- * possible exceptions:
- * 	EqualToWithoutAKey
- * 	FileOpenFailed
- * 	InvalidCharacter
- * 	InvalidOutputStream
- * 	MissingEqualTo
- * 	NoValueFoundForKey
- * 	TrailingCharsAfterEqualTo
- * 	ValueWithoutAKey
+ * \throws EqualToWithoutAKey
+ * \throws FileOpenFailed
+ * \throws InvalidCharacter
+ * \throws InvalidOutputStream
+ * \throws MissingEqualTo
+ * \throws NoValueFoundForKey
+ * \throws TrailingCharsAfterEqualTo
+ * \throws ValueWithoutAKey
  */
 void ckv::ConfigFile::set_value_for_key(std::string key, std::string new_value, std::ostream &out)
 {
@@ -273,24 +289,23 @@ void ckv::ConfigFile::set_value_for_key(std::string key, std::string new_value, 
 
 }
 
-/*
- * It sets the value for the key param1 to value param2
+/**
+ * It sets the value for the param key to param value
  * in the same file.
  *
- * param1:
- * 	key whose value needs to be changes
+ * \param key
+ * 	Key whose value needs to be changes
  *
- * param2:
- * 	new value for param1
+ * \param new_value
+ * 	New value for param1
  *
- * possible exceptions:
- * 	EqualToWithoutAKey
- * 	FileOpenFailed
- * 	InvalidCharacter
- * 	MissingEqualTo
- * 	NoValueFoundForKey
- * 	TrailingCharsAfterEqualTo
- * 	ValueWithoutAKey
+ * \throws EqualToWithoutAKey
+ * \throws FileOpenFailed
+ * \throws InvalidCharacter
+ * \throws MissingEqualTo
+ * \throws NoValueFoundForKey
+ * \throws TrailingCharsAfterEqualTo
+ * \throws ValueWithoutAKey
  */
 void ckv::ConfigFile::set_value_for_key(std::string key, std::string new_value)
 {
@@ -310,11 +325,11 @@ void ckv::ConfigFile::set_value_for_key(std::string key, std::string new_value)
 			file_reader.close();
 		}
 
-		std::ofstream out(file_name);
+		std::ofstream out(file_path);
 
 		if (!out) {
 			err_line_no = 0;
-			throw ckv::FileOpenFailed(file_name);
+			throw ckv::FileOpenFailed(file_path);
 		}
 
 		out.seekp(0, std::ios::beg);
@@ -339,25 +354,24 @@ void ckv::ConfigFile::set_value_for_key(std::string key, std::string new_value)
 
 }
 
-/*
- * It removes the key param1.
- * It outputs the resulting file ouput to param2.
+/**
+ * It removes the param key.
+ * It outputs the resulting file ouput to param out.
  *
- * param1:
- * 	key to remove
+ * \param key
+ * 	Key to remove
  *
- * param2:
+ * \param out
  * 	ostream to output the updated contents
  *
- * possible exceptions:
- * 	EqualToWithoutAKey
- * 	FileOpenFailed
- * 	InvalidCharacter
- * 	InvalidOutputStream
- * 	MissingEqualTo
- * 	NoValueFoundForKey
- * 	TrailingCharsAfterEqualTo
- * 	ValueWithoutAKey
+ * \throws EqualToWithoutAKey
+ * \throws FileOpenFailed
+ * \throws InvalidCharacter
+ * \throws InvalidOutputStream
+ * \throws MissingEqualTo
+ * \throws NoValueFoundForKey
+ * \throws TrailingCharsAfterEqualTo
+ * \throws ValueWithoutAKey
  */
 void ckv::ConfigFile::remove_key(std::string key, std::ostream &out)
 {
@@ -386,20 +400,19 @@ void ckv::ConfigFile::remove_key(std::string key, std::ostream &out)
 	}
 }
 
-/*
- * It removes the key param1 in the same file itself.
+/**
+ * It removes the param key in the same file itself.
  *
- * param1:
- * 	key to remove
+ * \param key
+ * 	Key to remove
  *
- * possible exceptions:
- * 	EqualToWithoutAKey
- * 	FileOpenFailed
- * 	InvalidCharacter
- * 	MissingEqualTo
- * 	NoValueFoundForKey
- * 	TrailingCharsAfterEqualTo
- * 	ValueWithoutAKey
+ * \throws EqualToWithoutAKey
+ * \throws FileOpenFailed
+ * \throws InvalidCharacter
+ * \throws MissingEqualTo
+ * \throws NoValueFoundForKey
+ * \throws TrailingCharsAfterEqualTo
+ * \throws ValueWithoutAKey
  */
 void ckv::ConfigFile::remove_key(std::string key)
 {
@@ -414,11 +427,11 @@ void ckv::ConfigFile::remove_key(std::string key)
 
 		file_reader.close();
 
-		std::ofstream out(file_name);
+		std::ofstream out(file_path);
 
 		if (!out) {
 			err_line_no = 0;
-			throw ckv::FileOpenFailed(file_name);
+			throw ckv::FileOpenFailed(file_path);
 		}
 
 		out.seekp(0, std::ios::beg);
@@ -434,19 +447,18 @@ void ckv::ConfigFile::remove_key(std::string key)
 	}
 }
 
-/*
+/**
  * It goes though all the keys in the ckv file
  * and store the key value pairs in an unordered_map
  * and returns.
  *
- * possible Exceptions:
- * 	EqualToWithoutAKey
- * 	FileOpenFailed
- * 	InvalidCharacter
- * 	MissingEqualTo
- * 	NoValueFoundForKey
- * 	TrailingCharsAfterEqualTo
- * 	ValueWithoutAKey
+ * \throws EqualToWithoutAKey
+ * \throws FileOpenFailed
+ * \throws InvalidCharacter
+ * \throws MissingEqualTo
+ * \throws NoValueFoundForKey
+ * \throws TrailingCharsAfterEqualTo
+ * \throws ValueWithoutAKey
  */
 std::unordered_map<std::string, std::string> ckv::ConfigFile::import_to_map()
 {
