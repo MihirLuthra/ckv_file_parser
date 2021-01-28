@@ -7,8 +7,8 @@ file(
 
 list(
 	APPEND CKV_FILE_PARSER_SOURCE_FILES
-	${CMAKE_SOURCE_DIR}/docs/Doxyfile.in
-	${CMAKE_SOURCE_DIR}/docs/logo.png
+	${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in
+	${CMAKE_CURRENT_SOURCE_DIR}/logo.png
 )
 
 set(DOXYGEN_INPUT_DIR ${PROJECT_SOURCE_DIR}/src)

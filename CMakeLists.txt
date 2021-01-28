@@ -3,7 +3,7 @@ project(ckv_file_parser VERSION 1.0.0)
 
 add_subdirectory(src)
 add_subdirectory(tests)
-add_subdirectory(docs)
+add_subdirectory(doxygen)
 
 enable_testing()
 add_test(
